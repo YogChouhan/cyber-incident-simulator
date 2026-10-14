@@ -1,6 +1,12 @@
-#include "../include/Device.h"
+#include "Device.h"
+#include <iostream>
+#include <iomanip>
+#include <string>
 
-std::string deviceStatusToString(DeviceStatus status) {
+using namespace std;
+
+// Converts a DeviceStatus enum value into a readable string for display
+string deviceStatusToString(DeviceStatus status) {
     switch (status) {
         case DeviceStatus::ONLINE:       return "ONLINE";
         case DeviceStatus::COMPROMISED: return "COMPROMISED";
@@ -12,186 +18,219 @@ std::string deviceStatusToString(DeviceStatus status) {
 }
 
 // ============================================================================
-// NetworkDevice (Abstract Base Class) Implementation
+// NetworkDevice (Abstract Base Class)
 // ============================================================================
 
-NetworkDevice::NetworkDevice(int id, const std::string& hostname, const std::string& ipAddress, DeviceStatus status)
+// Base constructor initializes common device attributes
+NetworkDevice::NetworkDevice(int id, const string& hostname, const string& ipAddress, DeviceStatus status)
     : m_id(id), m_hostname(hostname), m_ipAddress(ipAddress), m_status(status) {}
 
+// Returns the unique numeric ID of the device
 int NetworkDevice::getId() const {
     return m_id;
 }
 
-std::string NetworkDevice::getHostname() const {
+// Returns the device hostname
+string NetworkDevice::getHostname() const {
     return m_hostname;
 }
 
-std::string NetworkDevice::getIpAddress() const {
+// Returns the IP address of the device
+string NetworkDevice::getIpAddress() const {
     return m_ipAddress;
 }
 
+// Returns the current status enum value of the device
 DeviceStatus NetworkDevice::getStatus() const {
     return m_status;
 }
 
-std::string NetworkDevice::getStatusString() const {
+// Returns the current status as a human-readable text string
+string NetworkDevice::getStatusString() const {
     return deviceStatusToString(m_status);
 }
 
+// Updates the operational status of the device
 void NetworkDevice::setStatus(DeviceStatus newStatus) {
     m_status = newStatus;
 }
 
-void NetworkDevice::setHostname(const std::string& hostname) {
+// Updates the hostname of the device
+void NetworkDevice::setHostname(const string& hostname) {
     m_hostname = hostname;
 }
 
-void NetworkDevice::setIpAddress(const std::string& ipAddress) {
+// Updates the IP address of the device
+void NetworkDevice::setIpAddress(const string& ipAddress) {
     m_ipAddress = ipAddress;
 }
 
 // ============================================================================
-// Server Implementation
+// Server (Derived Class)
 // ============================================================================
 
-Server::Server(int id, const std::string& hostname, const std::string& ipAddress,
-               const std::string& serviceType, int activeConnections, DeviceStatus status)
+// Constructor initializes base attributes plus server-specific service and connections
+Server::Server(int id, const string& hostname, const string& ipAddress,
+               const string& serviceType, int activeConnections, DeviceStatus status)
     : NetworkDevice(id, hostname, ipAddress, status),
       m_serviceType(serviceType),
       m_activeConnections(activeConnections) {}
 
-std::string Server::getServiceType() const {
+// Returns the type of service running on the server
+string Server::getServiceType() const {
     return m_serviceType;
 }
 
-void Server::setServiceType(const std::string& serviceType) {
+// Sets the service type running on this server
+void Server::setServiceType(const string& serviceType) {
     m_serviceType = serviceType;
 }
 
+// Returns the current number of active TCP connections
 int Server::getActiveConnections() const {
     return m_activeConnections;
 }
 
+// Updates the count of active connections
 void Server::setActiveConnections(int count) {
     m_activeConnections = count;
 }
 
-std::string Server::getDeviceRole() const {
+// Returns the descriptive role name for this server
+string Server::getDeviceRole() const {
     return "Enterprise Infrastructure Server";
 }
 
+// Prints detailed specifications and state of this server
 void Server::displayInfo() const {
-    std::cout << "[SERVER #" << m_id << "]\n"
-              << "  Hostname       : " << m_hostname << "\n"
-              << "  IP Address     : " << m_ipAddress << "\n"
-              << "  Role           : " << getDeviceRole() << "\n"
-              << "  Hosted Service : " << m_serviceType << "\n"
-              << "  Active Conns   : " << m_activeConnections << "\n"
-              << "  Status         : [" << getStatusString() << "]\n";
+    cout << "[SERVER #" << m_id << "]\n"
+         << "  Hostname       : " << m_hostname << "\n"
+         << "  IP Address     : " << m_ipAddress << "\n"
+         << "  Role           : " << getDeviceRole() << "\n"
+         << "  Hosted Service : " << m_serviceType << "\n"
+         << "  Active Conns   : " << m_activeConnections << "\n"
+         << "  Status         : [" << getStatusString() << "]\n";
 }
 
+// Runs simulated service and socket diagnostic checks on the server
 void Server::performDiagnostics() const {
-    std::cout << ">>> Running Server Diagnostics on " << m_hostname << " (" << m_ipAddress << ")...\n"
-              << "  [1] Verifying systemd daemon for service: " << m_serviceType << "\n"
-              << "  [2] Analyzing socket queue (Active TCP/UDP Conns: " << m_activeConnections << ")\n"
-              << "  [3] Checking root filesystem inode integrity & log anomalies\n"
-              << "  [4] Health assessment: Current device state is [" << getStatusString() << "]\n";
+    cout << ">>> Running Server Diagnostics on " << m_hostname << " (" << m_ipAddress << ")...\n"
+         << "  [1] Verifying systemd daemon for service: " << m_serviceType << "\n"
+         << "  [2] Analyzing socket queue (Active TCP/UDP Conns: " << m_activeConnections << ")\n"
+         << "  [3] Checking root filesystem inode integrity & log anomalies\n"
+         << "  [4] Health assessment: Current device state is [" << getStatusString() << "]\n";
 }
 
 // ============================================================================
-// Workstation Implementation
+// Workstation (Derived Class)
 // ============================================================================
 
-Workstation::Workstation(int id, const std::string& hostname, const std::string& ipAddress,
-                         const std::string& assignedUser, const std::string& operatingSystem,
+// Constructor initializes base attributes plus assigned user and operating system
+Workstation::Workstation(int id, const string& hostname, const string& ipAddress,
+                         const string& assignedUser, const string& operatingSystem,
                          DeviceStatus status)
     : NetworkDevice(id, hostname, ipAddress, status),
       m_assignedUser(assignedUser),
       m_operatingSystem(operatingSystem) {}
 
-std::string Workstation::getAssignedUser() const {
+// Returns the name of the assigned user
+string Workstation::getAssignedUser() const {
     return m_assignedUser;
 }
 
-void Workstation::setAssignedUser(const std::string& user) {
+// Updates the assigned user for this workstation
+void Workstation::setAssignedUser(const string& user) {
     m_assignedUser = user;
 }
 
-std::string Workstation::getOperatingSystem() const {
+// Returns the installed operating system name
+string Workstation::getOperatingSystem() const {
     return m_operatingSystem;
 }
 
-void Workstation::setOperatingSystem(const std::string& os) {
+// Updates the installed operating system name
+void Workstation::setOperatingSystem(const string& os) {
     m_operatingSystem = os;
 }
 
-std::string Workstation::getDeviceRole() const {
+// Returns the role description for this workstation
+string Workstation::getDeviceRole() const {
     return "Employee Client Workstation";
 }
 
+// Prints detailed information about this workstation
 void Workstation::displayInfo() const {
-    std::cout << "[WORKSTATION #" << m_id << "]\n"
-              << "  Hostname       : " << m_hostname << "\n"
-              << "  IP Address     : " << m_ipAddress << "\n"
-              << "  Role           : " << getDeviceRole() << "\n"
-              << "  Assigned User  : " << m_assignedUser << "\n"
-              << "  OS Version     : " << m_operatingSystem << "\n"
-              << "  Status         : [" << getStatusString() << "]\n";
+    cout << "[WORKSTATION #" << m_id << "]\n"
+         << "  Hostname       : " << m_hostname << "\n"
+         << "  IP Address     : " << m_ipAddress << "\n"
+         << "  Role           : " << getDeviceRole() << "\n"
+         << "  Assigned User  : " << m_assignedUser << "\n"
+         << "  OS Version     : " << m_operatingSystem << "\n"
+         << "  Status         : [" << getStatusString() << "]\n";
 }
 
+// Runs simulated EDR and user session diagnostics on the workstation
 void Workstation::performDiagnostics() const {
-    std::cout << ">>> Running Workstation Diagnostics on " << m_hostname << " (" << m_ipAddress << ")...\n"
-              << "  [1] Verifying Endpoint Detection and Response (EDR) agent\n"
-              << "  [2] Auditing logged-in user session for: " << m_assignedUser << "\n"
-              << "  [3] Scanning local startup registry keys and task schedulers\n"
-              << "  [4] Health assessment: Current device state is [" << getStatusString() << "]\n";
+    cout << ">>> Running Workstation Diagnostics on " << m_hostname << " (" << m_ipAddress << ")...\n"
+         << "  [1] Verifying Endpoint Detection and Response (EDR) agent\n"
+         << "  [2] Auditing logged-in user session for: " << m_assignedUser << "\n"
+         << "  [3] Scanning local startup registry keys and task schedulers\n"
+         << "  [4] Health assessment: Current device state is [" << getStatusString() << "]\n";
 }
 
 // ============================================================================
-// Firewall Implementation
+// Firewall (Derived Class)
 // ============================================================================
 
-Firewall::Firewall(int id, const std::string& hostname, const std::string& ipAddress,
-                   const std::string& inspectionPolicy, int blockedThreats,
+// Constructor initializes base attributes plus firewall policy and blocked threats count
+Firewall::Firewall(int id, const string& hostname, const string& ipAddress,
+                   const string& inspectionPolicy, int blockedThreats,
                    DeviceStatus status)
     : NetworkDevice(id, hostname, ipAddress, status),
       m_blockedThreatsCount(blockedThreats),
       m_inspectionPolicy(inspectionPolicy) {}
 
+// Returns the total number of threats blocked by this firewall
 int Firewall::getBlockedThreatsCount() const {
     return m_blockedThreatsCount;
 }
 
+// Increments the counter of blocked malicious packets
 void Firewall::incrementBlockedThreats(int count) {
     m_blockedThreatsCount += count;
 }
 
-std::string Firewall::getInspectionPolicy() const {
+// Returns the active packet inspection policy
+string Firewall::getInspectionPolicy() const {
     return m_inspectionPolicy;
 }
 
-void Firewall::setInspectionPolicy(const std::string& policy) {
+// Updates the active packet inspection policy
+void Firewall::setInspectionPolicy(const string& policy) {
     m_inspectionPolicy = policy;
 }
 
-std::string Firewall::getDeviceRole() const {
+// Returns the role description for this firewall
+string Firewall::getDeviceRole() const {
     return "Perimeter Security Gateway / Firewall";
 }
 
+// Prints detailed firewall configuration and packet counters
 void Firewall::displayInfo() const {
-    std::cout << "[FIREWALL #" << m_id << "]\n"
-              << "  Hostname       : " << m_hostname << "\n"
-              << "  IP Address     : " << m_ipAddress << "\n"
-              << "  Role           : " << getDeviceRole() << "\n"
-              << "  Inspection ACL : " << m_inspectionPolicy << "\n"
-              << "  Blocked Threats: " << m_blockedThreatsCount << "\n"
-              << "  Status         : [" << getStatusString() << "]\n";
+    cout << "[FIREWALL #" << m_id << "]\n"
+         << "  Hostname       : " << m_hostname << "\n"
+         << "  IP Address     : " << m_ipAddress << "\n"
+         << "  Role           : " << getDeviceRole() << "\n"
+         << "  Inspection ACL : " << m_inspectionPolicy << "\n"
+         << "  Blocked Threats: " << m_blockedThreatsCount << "\n"
+         << "  Status         : [" << getStatusString() << "]\n";
 }
 
+// Runs simulated stateful inspection table and dropped packet diagnostics
 void Firewall::performDiagnostics() const {
-    std::cout << ">>> Running Firewall Diagnostics on " << m_hostname << " (" << m_ipAddress << ")...\n"
-              << "  [1] Checking SPI (Stateful Packet Inspection) connection table capacity\n"
-              << "  [2] Evaluating policy rule enforcement: " << m_inspectionPolicy << "\n"
-              << "  [3] Total dropped/blocked malicious packets logged: " << m_blockedThreatsCount << "\n"
-              << "  [4] Health assessment: Current device state is [" << getStatusString() << "]\n";
+    cout << ">>> Running Firewall Diagnostics on " << m_hostname << " (" << m_ipAddress << ")...\n"
+         << "  [1] Checking SPI (Stateful Packet Inspection) connection table capacity\n"
+         << "  [2] Evaluating policy rule enforcement: " << m_inspectionPolicy << "\n"
+         << "  [3] Total dropped/blocked malicious packets logged: " << m_blockedThreatsCount << "\n"
+         << "  [4] Health assessment: Current device state is [" << getStatusString() << "]\n";
 }

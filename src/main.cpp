@@ -1,17 +1,20 @@
-#include "../include/Simulator.h"
+#include "Simulator.h"
 #include <iostream>
 #include <exception>
 
+using namespace std;
+
+// Application entry point: initializes simulator and manages top-level exception handling
 int main() {
     try {
         SimulatorApp app;
         app.run();
-    } catch (const std::exception& ex) {
-        std::cerr << "\n[CRITICAL ERROR] Unhandled exception occurred: " << ex.what() << std::endl;
-        return 1;
+    } catch (const exception& ex) {
+        cerr << "\n[APPLICATION FINISHED] " << ex.what() << endl;
+        return 0;
     } catch (...) {
-        std::cerr << "\n[CRITICAL ERROR] Unknown exception occurred during simulation execution." << std::endl;
-        return 2;
+        cerr << "\n[CRITICAL ERROR] Unknown exception occurred during simulation execution." << endl;
+        return 1;
     }
     return 0;
 }

@@ -2,12 +2,10 @@
 #define DEVICE_H
 
 #include <string>
-#include <iostream>
-#include <iomanip>
 
 /**
  * @enum DeviceStatus
- * @brief Represents the operational and security status of a network device.
+ * Represents the operational and security status of a network device.
  */
 enum class DeviceStatus {
     ONLINE,
@@ -17,15 +15,12 @@ enum class DeviceStatus {
     OFFLINE
 };
 
-/**
- * @brief Helper utility to convert DeviceStatus enum to a readable string.
- */
+// Helper utility to convert DeviceStatus enum to a readable string
 std::string deviceStatusToString(DeviceStatus status);
 
 /**
  * @class NetworkDevice
- * @brief Abstract Base Class representing a generic device on the network.
- * Demonstrates: Encapsulation, Abstraction, and Polymorphism.
+ * Abstract base class representing a generic device on the network.
  */
 class NetworkDevice {
 protected:
@@ -38,7 +33,7 @@ public:
     NetworkDevice(int id, const std::string& hostname, const std::string& ipAddress, DeviceStatus status = DeviceStatus::ONLINE);
     virtual ~NetworkDevice() = default;
 
-    // Getters and Setters (Encapsulation)
+    // Getters and Setters
     int getId() const;
     std::string getHostname() const;
     std::string getIpAddress() const;
@@ -49,7 +44,7 @@ public:
     void setHostname(const std::string& hostname);
     void setIpAddress(const std::string& ipAddress);
 
-    // Pure Virtual Functions (Polymorphism & Abstraction)
+    // Pure virtual functions that derived classes must implement
     virtual std::string getDeviceRole() const = 0;
     virtual void displayInfo() const = 0;
     virtual void performDiagnostics() const = 0;
@@ -57,7 +52,7 @@ public:
 
 /**
  * @class Server
- * @brief Derived class representing enterprise servers (e.g., Database, Web Server).
+ * Derived class representing servers (e.g., Database, Web Server).
  */
 class Server : public NetworkDevice {
 private:
@@ -76,7 +71,7 @@ public:
     int getActiveConnections() const;
     void setActiveConnections(int count);
 
-    // Overridden Virtual Functions
+    // Overridden virtual functions
     std::string getDeviceRole() const override;
     void displayInfo() const override;
     void performDiagnostics() const override;
@@ -84,7 +79,7 @@ public:
 
 /**
  * @class Workstation
- * @brief Derived class representing endpoint client computers used by personnel.
+ * Derived class representing user client machines.
  */
 class Workstation : public NetworkDevice {
 private:
@@ -103,7 +98,7 @@ public:
     std::string getOperatingSystem() const;
     void setOperatingSystem(const std::string& os);
 
-    // Overridden Virtual Functions
+    // Overridden virtual functions
     std::string getDeviceRole() const override;
     void displayInfo() const override;
     void performDiagnostics() const override;
@@ -111,7 +106,7 @@ public:
 
 /**
  * @class Firewall
- * @brief Derived class representing boundary perimeter security appliances.
+ * Derived class representing network perimeter firewalls.
  */
 class Firewall : public NetworkDevice {
 private:
@@ -130,7 +125,7 @@ public:
     std::string getInspectionPolicy() const;
     void setInspectionPolicy(const std::string& policy);
 
-    // Overridden Virtual Functions
+    // Overridden virtual functions
     std::string getDeviceRole() const override;
     void displayInfo() const override;
     void performDiagnostics() const override;

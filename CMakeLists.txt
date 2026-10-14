@@ -12,9 +12,6 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-# Include Header Directory
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
-
 # Source Files
 set(SOURCES
     src/main.cpp
@@ -26,7 +23,10 @@ set(SOURCES
 # Executable Target
 add_executable(CyberIncidentSimulator ${SOURCES})
 
-# Compiler Warnings and Flags for MinGW GCC / Clang
+# Include Header Directory
+target_include_directories(CyberIncidentSimulator PRIVATE include)
+
+# Compiler Warnings and Flags for MinGW GCC
 if(MSVC)
     target_compile_options(CyberIncidentSimulator PRIVATE /W4 /permissive-)
 else()

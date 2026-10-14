@@ -3,12 +3,11 @@
 
 #include "Device.h"
 #include <string>
-#include <iostream>
 #include <sstream>
 
 /**
  * @enum IncidentSeverity
- * @brief Severity level classification according to cybersecurity frameworks.
+ * Severity levels for classified security incidents.
  */
 enum class IncidentSeverity {
     LOW,
@@ -19,7 +18,7 @@ enum class IncidentSeverity {
 
 /**
  * @enum IncidentStatus
- * @brief Current triage and lifecycle state of the security incident.
+ * Lifecycle stages of a security incident.
  */
 enum class IncidentStatus {
     ACTIVE,
@@ -28,16 +27,13 @@ enum class IncidentStatus {
     RESOLVED
 };
 
-/**
- * @brief Helper utility functions for enum string conversion.
- */
+// Helper utility functions for enum to string conversions
 std::string severityToString(IncidentSeverity severity);
 std::string incidentStatusToString(IncidentStatus status);
 
 /**
  * @class SecurityIncident
- * @brief Abstract Base Class representing an ongoing or historical security event.
- * Demonstrates: Non-owning pointer reference to target device, pure virtual functions.
+ * Abstract base class representing a generic cybersecurity incident.
  */
 class SecurityIncident {
 protected:
@@ -54,7 +50,7 @@ public:
                      NetworkDevice* targetDevice, const std::string& timestamp);
     virtual ~SecurityIncident() = default;
 
-    // Getters and Setters (Encapsulation)
+    // Getters and Setters
     int getId() const;
     std::string getTitle() const;
     IncidentSeverity getSeverity() const;
@@ -69,7 +65,7 @@ public:
     void setTargetDevice(NetworkDevice* target);
     void appendLog(const std::string& entry);
 
-    // Pure Virtual Functions (Polymorphism & Abstraction)
+    // Pure virtual functions for polymorphism
     virtual void investigate() const = 0;
     virtual void printResponseOptions() const = 0;
     virtual bool applyResponse(int actionChoice) = 0;
@@ -79,10 +75,11 @@ public:
 
 /**
  * @class MalwareIncident
- * @brief Derived class simulating malware, trojan, or ransomware infections.
+ * Derived class for malware, trojan, spyware, or ransomware events.
  */
 class MalwareIncident : public SecurityIncident {
 private:
+    std::string m_category;
     std::string m_malwareSignature;
     std::string m_infectedProcess;
     bool m_isolatedFromNetwork;
@@ -91,13 +88,15 @@ private:
 public:
     MalwareIncident(int id, const std::string& title, IncidentSeverity severity,
                     NetworkDevice* targetDevice, const std::string& timestamp,
-                    const std::string& signature, const std::string& infectedProcess);
+                    const std::string& category, const std::string& signature,
+                    const std::string& infectedProcess);
     ~MalwareIncident() override = default;
 
+    std::string getCategory() const;
     std::string getMalwareSignature() const;
     std::string getInfectedProcess() const;
 
-    // Overridden Virtual Functions
+    // Overridden virtual functions
     void investigate() const override;
     void printResponseOptions() const override;
     bool applyResponse(int actionChoice) override;
@@ -107,7 +106,7 @@ public:
 
 /**
  * @class DDoSIncident
- * @brief Derived class simulating Distributed Denial of Service volumetric and protocol attacks.
+ * Derived class for Distributed Denial of Service flood attacks.
  */
 class DDoSIncident : public SecurityIncident {
 private:
@@ -125,7 +124,7 @@ public:
     std::string getAttackVector() const;
     double getTrafficVolumeGbps() const;
 
-    // Overridden Virtual Functions
+    // Overridden virtual functions
     void investigate() const override;
     void printResponseOptions() const override;
     bool applyResponse(int actionChoice) override;

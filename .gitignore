@@ -6,6 +6,11 @@
 *.so
 *.dylib
 
+# Archives
+*.zip
+*.tar
+*.gz
+
 # Build directories
 build/
 bin/
@@ -14,6 +19,9 @@ CMakeFiles/
 CMakeCache.txt
 cmake_install.cmake
 Makefile
+
+# Generated Reports
+cyber_incident_report.txt
 
 # IDE / Editor artifacts
 .vscode/

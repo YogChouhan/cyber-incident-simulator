@@ -9,8 +9,7 @@
 
 /**
  * @class SimulatorApp
- * @brief Central controller managing network topology, incident lifecycle, and user interactions.
- * Demonstrates: Ownership via std::unique_ptr, dynamic dispatch, and stream file handling.
+ * Central manager class that controls network devices, active incidents, and simulation flow.
  */
 class SimulatorApp {
 private:
@@ -19,27 +18,27 @@ private:
     int m_nextIncidentId;
     int m_nextDeviceId;
 
-    // Helper methods
+    // Helper functions
     void initializeDefaultNetwork();
     NetworkDevice* findDeviceById(int id) const;
     SecurityIncident* findIncidentById(int id) const;
     std::string getCurrentTimestamp() const;
-    int getValidatedIntInput(int minVal, int maxVal) const;
+    int getValidatedIntInput(int minVal, int maxVal, const std::string& prompt = "") const;
 
 public:
     SimulatorApp();
     ~SimulatorApp() = default;
 
-    // Disable copy semantics to prevent unintended cloning of unique_ptr collections
+    // Prevent accidental copying of unique_ptr collections
     SimulatorApp(const SimulatorApp&) = delete;
     SimulatorApp& operator=(const SimulatorApp&) = delete;
 
-    // Core operational loop
+    // Main execution loop
     void run();
 
-    // Menu Action Handlers
+    // Menu handlers
     void viewNetworkStatus() const;
-    void viewActiveIncidents() const;
+    void viewAllIncidents() const;
     void investigateAndRespond();
     void generateRandomIncident();
     void saveIncidentReportToFile() const;
